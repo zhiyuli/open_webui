@@ -1,0 +1,35 @@
+# Minimal privoxy config to forward everything to a SOCKS5 upstream
+# Change SOCKS_HOST and SOCKS_PORT to your SOCKS5 host:port below.
+# If your SOCKS5 requires user:pass include them as shown in the examples.
+
+confdir /etc/privoxy
+logdir /var/log/privoxy
+filterfile default.filter.new
+listen-address  0.0.0.0:8118
+
+debug 1
+debug 2
+debug 64
+debug 512
+debug 1024
+
+
+# --------- Forward to SOCKS5 upstream ----------
+# Replace SOCKS_HOST:SOCKS_PORT with your actual SOCKS5 proxy.
+# Example (no auth): forward-socks5t   /   10.0.0.5:1080 .
+# Example (with auth): forward-socks5t   /   username:password@10.0.0.5:1080 .
+#
+# Use "forward-socks5t" (the trailing t forces hostname resolution through SOCKS).
+# The trailing dot is required by privoxy syntax.
+
+## Forward all requests to SOCKS
+forward-socks5t   /   host.docker.internal:4567 .
+
+## below not working (Drew, 03/12/2026), request on nimbus bypasses socks, not sure why
+## Only route remote LLM API port through SOCKS
+## forward-socks5t   nimbus.chpc.utah.edu   host.docker.internal:4567 .
+
+## Everything else direct
+## forward   /   .
+
+# End of file

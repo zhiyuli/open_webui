@@ -1,0 +1,48 @@
+version: "3.8"
+services:
+  openwebui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: openwebui
+    restart: unless-stopped
+    environment:
+      # Make Open WebUI send outbound HTTP(S) requests via privoxy
+      ## for python/requests/https
+      - HTTP_PROXY=http://privoxy:8118
+      - HTTPS_PROXY=http://privoxy:8118
+      ## for curl/wget/libcurl-based apps
+      - ALL_PROXY=http://privoxy:8118
+      ## Do not use proxy for these hosts
+      ## ::1 is IPv6 version of 127.0.0.1
+      ## host.docker.internal refers to docker host in Mac and Windows
+      ## 172.17.0.1 refers to docker host in Linux
+      - NO_PROXY=localhost,127.0.0.1,::1,host.docker.internal,172.17.0.1
+      # Configure Open WebUI to use a remote OpenAI-compatible LLM.
+      # Replace below with the remote LLM base URL (example: http://remote-llm.example.com:11434/v1)
+      # Many WebUI builds also accept OLLAMA_BASE_URL or OPENAI_API_BASE - see your Open WebUI docs.
+      - OPENAI_API_BASE_URL=http://nimbus.chpc.utah.edu:44142/v1
+      # If the remote LLM requires an API key, set it here (or configure in WebUI UI later)
+      #- OPENAI_API_KEY=your_key_here
+    ports:
+      - "3000:8080"   # Open WebUI typically serves on 8080 inside the container; exposed as 3000 locally
+    depends_on:
+      - privoxy
+    networks:
+      - webproxy-net
+
+  privoxy:
+    image: ajoergensen/privoxy:latest # official-ish image variant; adjust if your setup has a different preferred image
+    container_name: privoxy
+    restart: unless-stopped
+    volumes:
+      - ./privoxy/config:/etc/privoxy/config:ro
+    ports:
+      - "8118:8118"   # Optional: expose locally for debug (not required)
+    networks:
+      - webproxy-net
+    environment:
+      # For monitoring / optional logs
+      - PRIVACY="off"
+
+networks:
+  webproxy-net:
+    driver: bridge
