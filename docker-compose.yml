@@ -34,6 +34,8 @@ services:
       - openwebui-data:/app/backend/data
     depends_on:
       - privoxy
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     networks:
       - webproxy-net
 
@@ -45,6 +47,8 @@ services:
       - ./privoxy/config:/etc/privoxy/config:ro
     ports:
       - "8118:8118"   # Optional: expose locally for debug (not required)
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     networks:
       - webproxy-net
     environment:
