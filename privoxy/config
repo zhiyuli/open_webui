@@ -19,17 +19,16 @@ debug 1024
 # Example (no auth): forward-socks5t   /   10.0.0.5:1080 .
 # Example (with auth): forward-socks5t   /   username:password@10.0.0.5:1080 .
 #
+
+# Rule precedence: for forwarding directives, the last matching route is used -- "Last-match-wins".
+# Docs: https://www.privoxy.org/3.0.29/user-manual/config.html#FORWARD
+
+# Everything else direct
+forward   /   .
+
+# Only route remote LLM API port through SOCKS
 # Use "forward-socks5t" (the trailing t forces hostname resolution through SOCKS).
 # The trailing dot is required by privoxy syntax.
-
-## Forward all requests to SOCKS
-forward-socks5t   /   host.docker.internal:4567 .
-
-## below not working (Drew, 03/12/2026), request on nimbus bypasses socks, not sure why
-## Only route remote LLM API port through SOCKS
-## forward-socks5t   nimbus.chpc.utah.edu   host.docker.internal:4567 .
-
-## Everything else direct
-## forward   /   .
+forward-socks5t   .nimbus.chpc.utah.edu   host.docker.internal:4567 .
 
 # End of file
