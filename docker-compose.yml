@@ -14,18 +14,18 @@ services:
       ## ::1 is IPv6 version of 127.0.0.1
       ## host.docker.internal refers to docker host in Mac and Windows
       ## 172.17.0.1 refers to docker host in Linux
-      - NO_PROXY=localhost,127.0.0.1,::1,host.docker.internal,172.17.0.1
+      - NO_PROXY=localhost,127.0.0.1,privoxy,::1,host.docker.internal,172.17.0.1
       # Configure Open WebUI to use a remote OpenAI-compatible LLM.
       # Replace below with the remote LLM base URL (example: http://remote-llm.example.com:11434/v1)
       # Many WebUI builds also accept OLLAMA_BASE_URL or OPENAI_API_BASE - see your Open WebUI docs.
       - OPENAI_API_BASE_URL=http://nimbus.chpc.utah.edu:44142/v1
+      ##- OPENAI_API_BASE_URL=http://nimbus.chpc.utah.edu:8004/v1
       # Keep Ollama disabled in this stack to avoid repeated connection-refused errors to
       # host.docker.internal:11434; this deployment uses OPENAI_API_BASE_URL via Privoxy/SOCKS.
       # Set true only when Ollama is reachable from this container and OLLAMA_BASE_URL is set.
       - ENABLE_OLLAMA_API=false
       # Increase model-list fetch timeout for slower upstream/proxy paths (default is 10s)
       - AIOHTTP_CLIENT_TIMEOUT_MODEL_LIST=30
-      ###- OPENAI_API_BASE_URL=http://nimbus.chpc.utah.edu:8004/v1
       # If the remote LLM requires an API key, set it here (or configure in WebUI UI later)
       #- OPENAI_API_KEY=your_key_here
     ports:
