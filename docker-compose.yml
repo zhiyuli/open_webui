@@ -21,7 +21,7 @@ services:
       ## - OPENAI_API_BASE_URL=http://nimbus.chpc.utah.edu:44142/v1
       ## - OPENAI_API_BASE_URL=http://nimbus.chpc.utah.edu:8004/v1
       - OPENAI_API_BASE_URL=http://host.docker.internal:8081/v1
-      - OPENAI_API_KEY=sk-8GA78B9_-iR6CvobvGMWDg
+      - OPENAI_API_KEY=XXXXXXXXXXXXX
       # Keep Ollama disabled in this stack to avoid repeated connection-refused errors to
       # host.docker.internal:11434; this deployment uses OPENAI_API_BASE_URL via Privoxy/SOCKS.
       # Set true only when Ollama is reachable from this container and OLLAMA_BASE_URL is set.
